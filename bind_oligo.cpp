@@ -973,27 +973,27 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 			
 			const unsigned int num_mismatch = m_melt.num_mismatch();
 			
-			// if(num_mismatch > m_max_mismatch){
+			if(num_mismatch > m_max_mismatch){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int num_gap = m_melt.num_gap();
 			
-			// if(num_gap > m_max_gap){
+			if(num_gap > m_max_gap){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, num_gap, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, num_gap, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			// How many "real" (non-degenerate, non-virtual) bases make up the target sequence?
 			// Since degenerate bases get turned into 'N' by the hash function, we can
