@@ -585,7 +585,8 @@ int local_main(int argc, char *argv[])
 							opt.min_probe_dg, opt.max_probe_dg, 
 							opt.probe_clamp_5, opt.probe_clamp_3, 
 							opt.max_gap, opt.max_mismatch,
-							opt.target_strand);
+							opt.target_strand,
+							opt.use_thermo_filter);
 					}
 				}
 				
