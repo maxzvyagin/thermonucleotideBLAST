@@ -490,7 +490,7 @@ void Options::parse_command_line(int argc, char *argv[])
 		cerr << "--blast-exclude <Limit search to exclude accessions or NCBI TaxId from a BLAST database> (may be repeated)" << endl;
 		#endif // USE_BLAST_DB
 
-		cerr << "--use-thermo-filter <T|F> (use thermodynamic filters to remove matches - free energy and Tm, default is F)";
+		cerr << "--use-thermo-filter <T|F> (use thermodynamic filters to remove matches - free energy and Tm, default is F)" << endl;
 	}
 }
 
