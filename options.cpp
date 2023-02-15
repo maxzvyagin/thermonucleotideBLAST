@@ -71,7 +71,6 @@ void Options::parse_command_line(int argc, char *argv[])
 	// --best-match (Only report the best match, in Tm, between an assay and a target)
 	// --blast-include <Accession or NCBI TaxId to include from BLAST database>
 	// --blast-exclude <Accession or NCBI TaxId to exclude from BLAST database>
-
 	// --use-thermo-filter <T|F> (use the thermodynamic params to filter out matches)
 
 	const char* options = "-i:o:d:D:l:e:E:z:Z:x:X:g:G:s:t:T:y:A:W:m:a:M:k:K:r:v:p:n:L:S:?h";
@@ -270,6 +269,7 @@ void Options::parse_command_line(int argc, char *argv[])
 				// thermo filter flag
 				if(config_opt == 24){
 					use_thermo_filter = parse_bool(optarg);
+					cerr << "Parsed thermo" << endl;
 				}
 
 				cerr << "Unknown flag!" << endl;

@@ -188,8 +188,6 @@ struct Options
 			// The -c flag controls reading of a configuration file
 			// (and parse_config_file is called by parse_command_line).
 			parse_command_line(argc, argv);
-
-			std::cerr << "Finished parsing" << std::endl; 
 			
 			// Don't validate parameters, if the user is only
 			// printing the command line options
