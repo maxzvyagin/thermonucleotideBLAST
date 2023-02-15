@@ -268,7 +268,8 @@ void Options::parse_command_line(int argc, char *argv[])
 
 				// thermo filter flag
 				if(config_opt == 24){
-					use_thermo_filter = parse_bool(optarg);
+
+					// use_thermo_filter = parse_bool(optarg);
 					cerr << "Parsed thermo" << endl;
 				}
 
