@@ -73,7 +73,7 @@ struct Options
 		VARIABLE(bool, allow_dangle_3) \
 		VARIABLE(bool, degen_rescale_ct) \
 		VARIABLE(bool, best_match) \
-		VARIABLE(bool, use_thermo_filter)
+		VARIABLE(bool, use_thermo_filter) \
 	
 	public:
 
