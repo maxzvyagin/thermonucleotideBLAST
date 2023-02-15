@@ -425,7 +425,8 @@ std::list<hybrid_sig> padlock(DNAHash &m_hash, const std::pair<std::string, SEQP
 	const float &m_min_primer_dg, const float &m_max_primer_dg,
 	const unsigned int &m_probe_clamp_5, const unsigned int &m_probe_clamp_3, 
 	const unsigned int &m_max_gap, const unsigned int &m_max_mismatch,
-	const int &m_target_strand);
+	const int &m_target_strand,
+	const bool &m_use_thermo_filter);
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // In probe_search.cpp
@@ -461,7 +462,8 @@ void bind_oligo_to_minus_strand(std::list<oligo_info> &info_list,
 		const unsigned int &m_clamp_5,
 		const unsigned int &m_clamp_3,
 		const unsigned int &m_max_gap,
-		const unsigned int &m_max_mismatch);
+		const unsigned int &m_max_mismatch, 
+		const bool &m_use_thermo_filter);
 
 void bind_oligo_to_plus_strand(std::list<oligo_info> &info_list, 
 		DNAHash &m_hash, SEQPTR m_seq, 
@@ -472,7 +474,8 @@ void bind_oligo_to_plus_strand(std::list<oligo_info> &info_list,
 		const unsigned int &m_clamp_5,
 		const unsigned int &m_clamp_3,
 		const unsigned int &m_max_gap,
-		const unsigned int &m_max_mismatch);
+		const unsigned int &m_max_mismatch, 
+		const bool &m_use_thermo_filter);
 
 void bind_oligo_to_minus_strand(std::list<oligo_info> &info_list, 
 		const unsigned char &m_oligo_mask, SEQPTR m_seq, 
@@ -483,7 +486,8 @@ void bind_oligo_to_minus_strand(std::list<oligo_info> &info_list,
 		const unsigned int &m_clamp_5,
 		const unsigned int &m_clamp_3,
 		const unsigned int &m_max_gap,
-		const unsigned int &m_max_mismatch);
+		const unsigned int &m_max_mismatch, 
+		const bool &m_use_thermo_filter);
 
 void bind_oligo_to_plus_strand(std::list<oligo_info> &info_list, 
 		const unsigned char &m_oligo_mask, SEQPTR m_seq, 
@@ -494,7 +498,8 @@ void bind_oligo_to_plus_strand(std::list<oligo_info> &info_list,
 		const unsigned int &m_clamp_5,
 		const unsigned int &m_clamp_3,
 		const unsigned int &m_max_gap,
-		const unsigned int &m_max_mismatch);
+		const unsigned int &m_max_mismatch, 
+		const bool &m_use_thermo_filter);
 		
 void match_oligo_to_minus_strand(std::list<oligo_info> &info_list, 
 		DNAHash &m_hash, const std::string &m_oligo, const unsigned char &m_mask);

@@ -68,7 +68,8 @@ list<hybrid_sig> padlock(DNAHash &m_hash, const pair<string, SEQPTR> &m_seq,
 	const float &m_min_probe_dg, const float &m_max_probe_dg,
 	const unsigned int &m_probe_clamp_5, const unsigned int &m_probe_clamp_3,
 	const unsigned int &m_max_gap, const unsigned int &m_max_mismatch,
-	const int &m_target_strand)
+	const int &m_target_strand, 
+	const bool &m_use_thermo_filter)
 {	
 	const float forward_primer_strand = m_forward_primer_strand/m_sig.forward_degen;
 	const float reverse_primer_strand = m_reverse_primer_strand/m_sig.reverse_degen;
@@ -101,7 +102,8 @@ list<hybrid_sig> padlock(DNAHash &m_hash, const pair<string, SEQPTR> &m_seq,
 			m_probe_clamp_5, 	// Upstream primer has a 5' clamp,
 			0,			// but no 3' clamp
 			m_max_gap,
-			m_max_mismatch); 	
+			m_max_mismatch, 
+			m_use_thermo_filter); 	
 	}
 		
 	// Test primer 1 in the downstream position
@@ -121,7 +123,8 @@ list<hybrid_sig> padlock(DNAHash &m_hash, const pair<string, SEQPTR> &m_seq,
 			0, 				// Downstream primer has a 3' clamp,
 			m_probe_clamp_3,
 			m_max_gap,
-			m_max_mismatch); 	// but no 5' clamp
+			m_max_mismatch,
+			m_use_thermo_filter); 	// but no 5' clamp
 	}
 	
 	//   <---downstream                 upstream--->
@@ -235,7 +238,8 @@ list<hybrid_sig> padlock(DNAHash &m_hash, const pair<string, SEQPTR> &m_seq,
 			m_probe_clamp_5, 	// Upstream primer has a 5' clamp,
 			0,			// but no 3' clamp
 			m_max_gap,
-			m_max_mismatch); 
+			m_max_mismatch,
+			m_use_thermo_filter); 
 	}
 	
 	// Test primer 1 in the downstream position
@@ -255,7 +259,8 @@ list<hybrid_sig> padlock(DNAHash &m_hash, const pair<string, SEQPTR> &m_seq,
 			0, 				// Downstream primer has a 3' clamp,
 			m_probe_clamp_3, 		// but no 5' clamp
 			m_max_gap,
-			m_max_mismatch); 
+			m_max_mismatch,
+			m_use_thermo_filter); 
 	}
 	
 	//   <---upstream                 downstream--->
