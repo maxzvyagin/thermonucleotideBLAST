@@ -564,35 +564,35 @@ int worker(int argc, char *argv[])
 		}
 		
 	}
-	catch(const char *error){
+	// catch(const char *error){
 	
-		cerr << "Caught the worker [" << mpi_rank << "] error: " << error << endl;
+	// 	cerr << "Caught the worker [" << mpi_rank << "] error: " << error << endl;
 		
-		const char *name = getenv("hostname");
+	// 	const char *name = getenv("hostname");
 		
-		if(name != NULL){
-			cerr << "Worker rank [" << mpi_rank << "] -> " << name << endl;
-		}
+	// 	if(name != NULL){
+	// 		cerr << "Worker rank [" << mpi_rank << "] -> " << name << endl;
+	// 	}
 		
-		return EXIT_FAILURE;
-	}
-	catch(std::exception &e){
+	// 	return EXIT_FAILURE;
+	// }
+	// catch(std::exception &e){
 		
-		cerr << "Caught the std exception: " << e.what() << endl;
-		return EXIT_FAILURE;
-	} 
-	catch(...){
+	// 	cerr << "Caught the std exception: " << e.what() << endl;
+	// 	return EXIT_FAILURE;
+	// } 
+	// catch(...){
 		
-		cerr << "Caught an unhandled worker [" << mpi_rank << "] error" << endl;
+	// 	cerr << "Caught an unhandled worker [" << mpi_rank << "] error" << endl;
 		
-		const char *name = getenv("hostname");
+	// 	const char *name = getenv("hostname");
 		
-		if(name != NULL){
-			cerr << "Worker rank [" << mpi_rank << "] -> " << name << endl;
-		}
+	// 	if(name != NULL){
+	// 		cerr << "Worker rank [" << mpi_rank << "] -> " << name << endl;
+	// 	}
 		
-		return EXIT_FAILURE;
-	}
+	// 	return EXIT_FAILURE;
+	// }
 
 	return EXIT_SUCCESS;
 }

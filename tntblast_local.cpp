@@ -1284,21 +1284,21 @@ int local_main(int argc, char *argv[])
 		// All done!
 		
 	}
-	catch(const char *error){
+	// catch(const char *error){
 	
-		cerr << "Caught the error: " << error << endl;
-		return EXIT_FAILURE;
-	}
-	catch(std::exception &e){
+	// 	cerr << "Caught the error: " << error << endl;
+	// 	return EXIT_FAILURE;
+	// }
+	// catch(std::exception &e){
 		
-		cerr << "Caught the std exception: " << e.what() << endl;
-		return EXIT_FAILURE;
-	} 
-	catch(...){
+	// 	cerr << "Caught the std exception: " << e.what() << endl;
+	// 	return EXIT_FAILURE;
+	// } 
+	// catch(...){
 	
-		cerr << "Caught an unhandled error. Please report to " << EMAIL_ADDRESS << endl;
-		return EXIT_FAILURE;
-	}
+	// 	cerr << "Caught an unhandled error. Please report to " << EMAIL_ADDRESS << endl;
+	// 	return EXIT_FAILURE;
+	// }
 
 	return EXIT_SUCCESS;
 }
