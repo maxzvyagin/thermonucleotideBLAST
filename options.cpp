@@ -100,7 +100,7 @@ void Options::parse_command_line(int argc, char *argv[])
 		{"best-match", false, &config_opt, 21},
 		{"blast-include", true, &config_opt, 22},
 		{"blast-exclude", true, &config_opt, 23},
-		{"use-thermo-filter", false, &config_opt, 24},
+		{"use-thermo-filter", true, &config_opt, 24},
 		{0,0,0,0} // Terminate options list
 	};
 
@@ -269,12 +269,13 @@ void Options::parse_command_line(int argc, char *argv[])
 				// thermo filter flag
 				if(config_opt == 24){
 
-					// use_thermo_filter = parse_bool(optarg);
-					cerr << "Parsed thermo" << endl;
+					use_thermo_filter = parse_bool(optarg);
+					cerr << "parsed thermo" << endl;
+					break;
 				}
 
-				// cerr << "Unknown flag!" << endl;
-				// break;
+				cerr << "Unknown flag!" << endl;
+				break;
 			case 'i':
 				input_filename = optarg;
 				break;
@@ -707,9 +708,9 @@ void Options::parse_output_file(const string &m_format)
 bool Options::parse_bool(string m_opt)
 {
 	// Make the input string upper case
-	for(string::iterator i = m_opt.begin();i != m_opt.end();i++){
-		*i = toupper(*i);
-	}
+	// for(string::iterator i = m_opt.begin();i != m_opt.end();i++){
+	// 	*i = toupper(*i);
+	// }
 
 	if( (m_opt == "T") || (m_opt == "TRUE") ){
 		return true;
