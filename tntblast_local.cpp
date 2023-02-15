@@ -34,20 +34,20 @@ int local_main(int argc, char *argv[])
 		
 		Options opt;
 		
-		try{
-			opt.parse(argc, argv);
-		}
-		catch(const char *error){
+		// try{
+		opt.parse(argc, argv);
+		// }
+		// catch(const char *error){
 			
-			cerr << "Input error: " << error << endl;			
-			return EXIT_FAILURE;
-		}
-		catch(...){
+			// cerr << "Input error: " << error << endl;			
+			// return EXIT_FAILURE;
+		// }
+		// catch(...){
 		
-			cerr << "Unhandled input error, please report to " 
-				<< EMAIL_ADDRESS << endl;			
-			return EXIT_FAILURE;
-		}
+		// 	cerr << "Unhandled input error, please report to " 
+		// 		<< EMAIL_ADDRESS << endl;			
+		// 	return EXIT_FAILURE;
+		// }
 		
 		// Is the user printing the command line arguments and then exiting?
 		if(opt.print_usage){
