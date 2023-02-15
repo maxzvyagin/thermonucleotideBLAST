@@ -717,6 +717,8 @@ bool Options::parse_bool(string m_opt)
 	if( (m_opt == "F") || (m_opt == "FALSE") ){
 		return false;
 	}
+
+	cerr << "parsed out bool for " << m_opt << endl;
 	
 	throw "Unknown boolean options -- please use \"T\" or \"F\"";
 	
