@@ -272,8 +272,8 @@ void Options::parse_command_line(int argc, char *argv[])
 					cerr << "Parsed thermo" << endl;
 				}
 
-				cerr << "Unknown flag!" << endl;
-				break;
+				// cerr << "Unknown flag!" << endl;
+				// break;
 			case 'i':
 				input_filename = optarg;
 				break;
