@@ -130,7 +130,8 @@ void bind_oligo_to_minus_strand(list<oligo_info> &info_list,
 		const unsigned int &m_clamp_5,
 		const unsigned int &m_clamp_3,
 		const unsigned int &m_max_gap,
-		const unsigned int &m_max_mismatch)
+		const unsigned int &m_max_mismatch,
+		const bool &m_use_thermo_filter)
 {		
 	const unsigned int window = m_melt.size_query();
 
@@ -256,76 +257,80 @@ void bind_oligo_to_minus_strand(list<oligo_info> &info_list,
 			#endif // PROFILE
 		
 			const float tm = m_melt.approximate_tm_heterodimer();
+
+			if (m_use_thermo_filter){
+				if( (tm < m_min_oligo_tm) || (tm > m_max_oligo_tm) ){
+
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, 0.0 /*dg*/, 0.0 /*dH*/, 0.0 /*dS*/,
+					0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+
+				continue;
+				}
+			}
 		
-			// if( (tm < m_min_oligo_tm) || (tm > m_max_oligo_tm) ){
-
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, 0.0 /*dg*/, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
-
-			// 	continue;
-			// }
-
 			const float dg = m_melt.delta_G();
-		
-			// if( (dg < m_min_oligo_dg) || (dg > m_max_oligo_dg) ){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+			if (m_use_thermo_filter){
+				if( (dg < m_min_oligo_dg) || (dg > m_max_oligo_dg) ){
+
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 					
-			// 	continue;
-			// }
-		
+				continue;
+				}
+			}
+			
 			const unsigned int anchor_5 = m_melt.anchor5_query();
 		
-			// if(anchor_5 < m_clamp_5){
+			if(anchor_5 < m_clamp_5){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 		
 			const unsigned int anchor_3 = m_melt.anchor3_query();
 		
-			// if(anchor_3 < m_clamp_3){
+			if(anchor_3 < m_clamp_3){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 		
 			const unsigned int num_mismatch = m_melt.num_mismatch();
 		
-			// if(num_mismatch > m_max_mismatch){
+			if(num_mismatch > m_max_mismatch){
 				
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 		
 			const unsigned int num_gap = m_melt.num_gap();
 		
-			// if(num_gap > m_max_gap){
+			if(num_gap > m_max_gap){
 				
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, num_gap, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, num_gap, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 		
 			// How many "real" (non-degenerate, non-virtual) bases make up the target sequence?
 			// Since degenerate bases get turned into 'N' by the hash function, we can
@@ -333,15 +338,15 @@ void bind_oligo_to_minus_strand(list<oligo_info> &info_list,
 			// half of the query can be aligned to real (ATGCI) bases
 			const unsigned int num_real_base = m_melt.num_real_base();
 
-			// if(num_real_base < window/2){
+			if(num_real_base < window/2){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, num_gap, num_real_base, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, num_gap, num_real_base, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 
 			pair<unsigned int, unsigned int> query_range;
 			pair<unsigned int, unsigned int> target_range;
@@ -377,29 +382,33 @@ void bind_oligo_to_minus_strand(list<oligo_info> &info_list,
 		}
 		else{ // Cache hit
 
-			// if( (cache_iter->second.tm < m_min_oligo_tm) || (cache_iter->second.tm > m_max_oligo_tm) ){
-			// 	continue;
-			// }
+			if(m_use_thermo_filter){
+				if( (cache_iter->second.tm < m_min_oligo_tm) || (cache_iter->second.tm > m_max_oligo_tm) ){
+				continue;
+				}
+			}
+			
+			if (m_use_thermo_filter){
+				if( (cache_iter->second.dg < m_min_oligo_dg) || (cache_iter->second.dg > m_max_oligo_dg) ){
+				continue;
+				}
+			}
+		
+			if(cache_iter->second.anchor_5 < m_clamp_5){
+				continue;
+			}
 
-			// if( (cache_iter->second.dg < m_min_oligo_dg) || (cache_iter->second.dg > m_max_oligo_dg) ){
-			// 	continue;
-			// }
+			if(cache_iter->second.num_mismatch > m_max_mismatch){
+				continue;
+			}
 
-			// if(cache_iter->second.anchor_5 < m_clamp_5){
-			// 	continue;
-			// }
+			if(cache_iter->second.num_gap > m_max_gap){
+				continue;
+			}
 
-			// if(cache_iter->second.num_mismatch > m_max_mismatch){
-			// 	continue;
-			// }
-
-			// if(cache_iter->second.num_gap > m_max_gap){
-			// 	continue;
-			// }
-
-			// if(cache_iter->second.num_real_base < window/2){
-			// 	continue;
-			// }
+			if(cache_iter->second.num_real_base < window/2){
+				continue;
+			}
 
 			hit_list.push_back(oligo_info( cache_iter->second.target_5, cache_iter->second.target_3, 
 				cache_iter->second.tm, 
@@ -444,7 +453,8 @@ void bind_oligo_to_minus_strand(list<oligo_info> &info_list,
 		const unsigned int &m_clamp_5,
 		const unsigned int &m_clamp_3,
 		const unsigned int &m_max_gap,
-		const unsigned int &m_max_mismatch)
+		const unsigned int &m_max_mismatch, 
+		const bool &m_use_thermo_filter)
 {
 	const unsigned int window = m_melt.size_query();
 	
@@ -575,88 +585,98 @@ void bind_oligo_to_minus_strand(list<oligo_info> &info_list,
 			#endif // PROFILE
 			
 			const float tm = m_melt.approximate_tm_heterodimer();
+
+			if (m_use_thermo_filter){
+
+				if( (tm < m_min_oligo_tm) || (tm > m_max_oligo_tm) ){
+					curr_oligo.pop_front();
+
+					// Add this partial result to the cache
+					m_melt_cache[key] = BindCacheValue(tm, 0.0 /*dg*/, 0.0 /*dH*/, 0.0 /*dS*/,
+						0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+						0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+
+					continue;
+				}
+
+			}
 			
-			// if( (tm < m_min_oligo_tm) || (tm > m_max_oligo_tm) ){
-
-			// 	curr_oligo.pop_front();
-
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, 0.0 /*dg*/, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
-
-			// 	continue;
-			// }
 			
 			const float dg = m_melt.delta_G();
+
+			if (m_use_thermo_filter){
+
+				if( (dg < m_min_oligo_dg) || (dg > m_max_oligo_dg) ){
+
+				curr_oligo.pop_front();
+
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+
+				continue;
+				}
+
+			}
 			
-			// if( (dg < m_min_oligo_dg) || (dg > m_max_oligo_dg) ){
-
-			// 	curr_oligo.pop_front();
-
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
-
-			// 	continue;
-			// }
+			
 			
 			const unsigned int anchor_5 = m_melt.anchor5_query();
 			
-			// if(anchor_5 < m_clamp_5){
+			if(anchor_5 < m_clamp_5){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int anchor_3 = m_melt.anchor3_query();
 			
-			// if(anchor_3 < m_clamp_3){
+			if(anchor_3 < m_clamp_3){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int num_mismatch = m_melt.num_mismatch();
 			
-			// if(num_mismatch > m_max_mismatch){
+			if(num_mismatch > m_max_mismatch){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int num_gap = m_melt.num_gap();
 			
-			// if(num_gap > m_max_gap){
+			if(num_gap > m_max_gap){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, num_gap, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, num_gap, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			// How many "real" (non-degenerate, non-virtual) bases make up the target sequence?
 			// Since degenerate bases get turned into 'N' by the hash function, we can
@@ -664,17 +684,17 @@ void bind_oligo_to_minus_strand(list<oligo_info> &info_list,
 			// half of the query can be aligned to real (ATGCI) bases
 			const unsigned int num_real_base = m_melt.num_real_base();
 
-			// if(num_real_base < window/2){
+			if(num_real_base < window/2){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, num_gap, num_real_base, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, num_gap, num_real_base, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 
 			pair<unsigned int, unsigned int> query_range;
 			pair<unsigned int, unsigned int> target_range;
@@ -717,41 +737,48 @@ void bind_oligo_to_minus_strand(list<oligo_info> &info_list,
 		}
 		else{ // Cache hit
 
-			// if( (cache_iter->second.tm < m_min_oligo_tm) || (cache_iter->second.tm > m_max_oligo_tm) ){
+			if (m_use_thermo_filter){
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+				if( (cache_iter->second.tm < m_min_oligo_tm) || (cache_iter->second.tm > m_max_oligo_tm) ){
 
-			// if( (cache_iter->second.dg < m_min_oligo_dg) || (cache_iter->second.dg > m_max_oligo_dg) ){
+				curr_oligo.pop_front();
+				continue;
+				}
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			}
+			
+			if (m_use_thermo_filter){
+				if( (cache_iter->second.dg < m_min_oligo_dg) || (cache_iter->second.dg > m_max_oligo_dg) ){
 
-			// if(cache_iter->second.anchor_5 < m_clamp_5){
+				curr_oligo.pop_front();
+				continue;
+				}
+			}
+			
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			if(cache_iter->second.anchor_5 < m_clamp_5){
 
-			// if(cache_iter->second.num_mismatch > m_max_mismatch){
+				curr_oligo.pop_front();
+				continue;
+			}
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			if(cache_iter->second.num_mismatch > m_max_mismatch){
 
-			// if(cache_iter->second.num_gap > m_max_gap){
+				curr_oligo.pop_front();
+				continue;
+			}
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			if(cache_iter->second.num_gap > m_max_gap){
 
-			// if(cache_iter->second.num_real_base < window/2){
+				curr_oligo.pop_front();
+				continue;
+			}
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			if(cache_iter->second.num_real_base < window/2){
+
+				curr_oligo.pop_front();
+				continue;
+			}
 
 			match_iter->loc_5 = cache_iter->second.target_5;
 			match_iter->loc_3 = cache_iter->second.target_3;
@@ -798,7 +825,8 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 		const unsigned int &m_clamp_5,
 		const unsigned int &m_clamp_3,
 		const unsigned int &m_max_gap,
-		const unsigned int &m_max_mismatch)
+		const unsigned int &m_max_mismatch, 
+		const bool &m_use_thermo_filter)
 {
 	const unsigned int window = m_melt.size_query();
 	
@@ -924,52 +952,58 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 			#endif // PROFILE
 			
 			const float tm = m_melt.approximate_tm_heterodimer();
-			
-			// if( (tm < m_min_oligo_tm) || (tm > m_max_oligo_tm) ){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, 0.0 /*dg*/, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+			if (m_use_thermo_filter){
 
-			// 	continue;
-			// }
+				if( (tm < m_min_oligo_tm) || (tm > m_max_oligo_tm) ){
+
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, 0.0 /*dg*/, 0.0 /*dH*/, 0.0 /*dS*/,
+					0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+
+				continue;
+				}
+
+			}
 			
 			const float dg = m_melt.delta_G();
-			
-			// if( (dg < m_min_oligo_dg) || (dg > m_max_oligo_dg) ){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+			if (m_use_thermo_filter){
+				if( (dg < m_min_oligo_dg) || (dg > m_max_oligo_dg) ){
 
-			// 	continue;
-			// }
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+
+				continue;
+				}
+			}
 			
 			const unsigned int anchor_5 = m_melt.anchor5_query();
 			
-			// if(anchor_5 < m_clamp_5){
+			if(anchor_5 < m_clamp_5){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int anchor_3 = m_melt.anchor3_query();
 			
-			// if(anchor_3 < m_clamp_3){
+			if(anchor_3 < m_clamp_3){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int num_mismatch = m_melt.num_mismatch();
 			
@@ -1001,15 +1035,15 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 			// half of the query can be aligned to real (ATGCI) bases
 			const unsigned int num_real_base = m_melt.num_real_base();
 
-			// if(num_real_base < window/2){
+			if(num_real_base < window/2){
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, num_gap, num_real_base, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, num_gap, num_real_base, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 
 			pair<unsigned int, unsigned int> query_range;
 			pair<unsigned int, unsigned int> target_range;
@@ -1045,29 +1079,33 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 		}
 		else{ // Cache hit
 
-			// if( (cache_iter->second.tm < m_min_oligo_tm) || (cache_iter->second.tm > m_max_oligo_tm) ){
-			// 	continue;
-			// }
+			if (m_use_thermo_filter){
+				if( (cache_iter->second.tm < m_min_oligo_tm) || (cache_iter->second.tm > m_max_oligo_tm) ){
+				continue;
+				}
+			}
+			
+			if(m_use_thermo_filter){
+				if( (cache_iter->second.dg < m_min_oligo_dg) || (cache_iter->second.dg > m_max_oligo_dg) ){
+				continue;
+				}
+			}
+			
+			if(cache_iter->second.anchor_5 < m_clamp_5){
+				continue;
+			}
 
-			// if( (cache_iter->second.dg < m_min_oligo_dg) || (cache_iter->second.dg > m_max_oligo_dg) ){
-			// 	continue;
-			// }
+			if(cache_iter->second.num_mismatch > m_max_mismatch){
+				continue;
+			}
 
-			// if(cache_iter->second.anchor_5 < m_clamp_5){
-			// 	continue;
-			// }
+			if(cache_iter->second.num_gap > m_max_gap){
+				continue;
+			}
 
-			// if(cache_iter->second.num_mismatch > m_max_mismatch){
-			// 	continue;
-			// }
-
-			// if(cache_iter->second.num_gap > m_max_gap){
-			// 	continue;
-			// }
-
-			// if(cache_iter->second.num_real_base < window/2){
-			// 	continue;
-			// }
+			if(cache_iter->second.num_real_base < window/2){
+				continue;
+			}
 
 			hit_list.push_back(oligo_info( cache_iter->second.target_5, cache_iter->second.target_3, 
 				cache_iter->second.tm, 
@@ -1111,7 +1149,8 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 		const unsigned int &m_clamp_5,
 		const unsigned int &m_clamp_3,
 		const unsigned int &m_max_gap,
-		const unsigned int &m_max_mismatch)
+		const unsigned int &m_max_mismatch, 
+		const bool &m_use_thermo_filter)
 {
 	const unsigned int window = m_melt.size_query();
 	
@@ -1242,88 +1281,96 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 			#endif // PROFILE
 			
 			const float tm = m_melt.approximate_tm_heterodimer();
+
+			if (m_use_thermo_filter){
+				if( (tm < m_min_oligo_tm) || (tm > m_max_oligo_tm) ){
+
+				curr_oligo.pop_front();
+
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, 0.0 /*dg*/, 0.0 /*dH*/, 0.0 /*dS*/,
+					0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+
+				continue;
+				}
+			}
 			
-			// if( (tm < m_min_oligo_tm) || (tm > m_max_oligo_tm) ){
-
-			// 	curr_oligo.pop_front();
-
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, 0.0 /*dg*/, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
-
-			// 	continue;
-			// }
+			
 			
 			const float dg = m_melt.delta_G();
+
+			if (m_use_thermo_filter){
+				if( (dg < m_min_oligo_dg) || (dg > m_max_oligo_dg) ){
+
+				curr_oligo.pop_front();
+
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+
+				continue;
+				}
+			}
 			
-			// if( (dg < m_min_oligo_dg) || (dg > m_max_oligo_dg) ){
-
-			// 	curr_oligo.pop_front();
-
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		0 /*anchor_5*/, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
-
-			// 	continue;
-			// }
+			
 			
 			const unsigned int anchor_5 = m_melt.anchor5_query();
 			
-			// if(anchor_5 < m_clamp_5){
+			if(anchor_5 < m_clamp_5){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, 0 /*anchor_3*/, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int anchor_3 = m_melt.anchor3_query();
 			
-			// if(anchor_3 < m_clamp_3){
+			if(anchor_3 < m_clamp_3){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					0 /*num_mismatch*/, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int num_mismatch = m_melt.num_mismatch();
 			
-			// if(num_mismatch > m_max_mismatch){
+			if(num_mismatch > m_max_mismatch){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, 0 /*num_gap*/, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			const unsigned int num_gap = m_melt.num_gap();
 			
-			// if(num_gap > m_max_gap){
+			if(num_gap > m_max_gap){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, num_gap, 0 /*num_real_base*/, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, num_gap, 0 /*num_real_base*/, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 			
 			// How many "real" (non-degenerate, non-virtual) bases make up the target sequence?
 			// Since degenerate bases get turned into 'N' by the hash function, we can
@@ -1331,17 +1378,17 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 			// half of the query can be aligned to real (ATGCI) bases
 			const unsigned int num_real_base = m_melt.num_real_base();
 
-			// if(num_real_base < window/2){
+			if(num_real_base < window/2){
 
-			// 	curr_oligo.pop_front();
+				curr_oligo.pop_front();
 
-			// 	// Add this partial result to the cache
-			// 	m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
-			// 		anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
-			// 		num_mismatch, num_gap, num_real_base, string() /*align*/);
+				// Add this partial result to the cache
+				m_melt_cache[key] = BindCacheValue(tm, dg, 0.0 /*dH*/, 0.0 /*dS*/,
+					anchor_5, anchor_3, 0 /*target_5*/, 0 /*target_3*/,
+					num_mismatch, num_gap, num_real_base, string() /*align*/);
 
-			// 	continue;
-			// }
+				continue;
+			}
 
 			pair<unsigned int, unsigned int> query_range;
 			pair<unsigned int, unsigned int> target_range;
@@ -1384,41 +1431,46 @@ void bind_oligo_to_plus_strand(list<oligo_info> &info_list,
 		}
 		else{ // Cache hit
 
-			// if( (cache_iter->second.tm < m_min_oligo_tm) || (cache_iter->second.tm > m_max_oligo_tm) ){
+			if (m_use_thermo_filter){
+				if( (cache_iter->second.tm < m_min_oligo_tm) || (cache_iter->second.tm > m_max_oligo_tm) ){
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+				curr_oligo.pop_front();
+				continue;
+				}
+			}
+			
+			if (m_use_thermo_filter){
+				if( (cache_iter->second.dg < m_min_oligo_dg) || (cache_iter->second.dg > m_max_oligo_dg) ){
 
-			// if( (cache_iter->second.dg < m_min_oligo_dg) || (cache_iter->second.dg > m_max_oligo_dg) ){
+				curr_oligo.pop_front();
+				continue;
+				}
+			}
+			
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			if(cache_iter->second.anchor_5 < m_clamp_5){
 
-			// if(cache_iter->second.anchor_5 < m_clamp_5){
+				curr_oligo.pop_front();
+				continue;
+			}
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			if(cache_iter->second.num_mismatch > m_max_mismatch){
 
-			// if(cache_iter->second.num_mismatch > m_max_mismatch){
+				curr_oligo.pop_front();
+				continue;
+			}
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			if(cache_iter->second.num_gap > m_max_gap){
 
-			// if(cache_iter->second.num_gap > m_max_gap){
+				curr_oligo.pop_front();
+				continue;
+			}
 
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+			if(cache_iter->second.num_real_base < window/2){
 
-			// if(cache_iter->second.num_real_base < window/2){
-
-			// 	curr_oligo.pop_front();
-			// 	continue;
-			// }
+				curr_oligo.pop_front();
+				continue;
+			}
 
 			match_iter->loc_5 = cache_iter->second.target_5;
 			match_iter->loc_3 = cache_iter->second.target_3;

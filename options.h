@@ -72,7 +72,8 @@ struct Options
 		VARIABLE(bool, allow_dangle_5) \
 		VARIABLE(bool, allow_dangle_3) \
 		VARIABLE(bool, degen_rescale_ct) \
-		VARIABLE(bool, best_match)
+		VARIABLE(bool, best_match) \
+		VARIABLE(bool, use_thermo_filter)
 	
 	public:
 
@@ -163,6 +164,9 @@ struct Options
 			fragment_target_threshold = DEFAULT_FRAGMENT_TARGET_LENGTH;
 			
 			threshold_format = THRESHOLD_NONE;
+
+			// use free-energy and melting temp to filter matches
+			use_thermo_filter = false;
 		};
 		
 		Options()

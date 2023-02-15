@@ -72,6 +72,8 @@ void Options::parse_command_line(int argc, char *argv[])
 	// --blast-include <Accession or NCBI TaxId to include from BLAST database>
 	// --blast-exclude <Accession or NCBI TaxId to exclude from BLAST database>
 
+	// --use-thermo-filter <T|F> (use the thermodynamic params to filter out matches)
+
 	const char* options = "-i:o:d:D:l:e:E:z:Z:x:X:g:G:s:t:T:y:A:W:m:a:M:k:K:r:v:p:n:L:S:?h";
 	int config_opt = 0;
 	int long_index = 0;
@@ -99,6 +101,7 @@ void Options::parse_command_line(int argc, char *argv[])
 		{"best-match", false, &config_opt, 21},
 		{"blast-include", true, &config_opt, 22},
 		{"blast-exclude", true, &config_opt, 23},
+		{"use-thermo-filter", false, &config_opt, 24},
 		{0,0,0,0} // Terminate options list
 	};
 
@@ -262,6 +265,11 @@ void Options::parse_command_line(int argc, char *argv[])
 				
 					blast_exclude.push_back(optarg);
 					break;
+				}
+
+				// thermo filter flag
+				if(config_opt == 24){
+					use_thermo_filter = parse_bool(optarg);
 				}
 
 				cerr << "Unknown flag!" << endl;
@@ -481,6 +489,8 @@ void Options::parse_command_line(int argc, char *argv[])
 		cerr << "--blast-include <Limit search to include accessions or NCBI TaxIds from a BLAST database> (may be repeated)" << endl;
 		cerr << "--blast-exclude <Limit search to exclude accessions or NCBI TaxId from a BLAST database> (may be repeated)" << endl;
 		#endif // USE_BLAST_DB
+
+		cerr << "--use-thermo-filter <T|F> (use thermodynamic filters to remove matches - free energy and Tm, default is F)";
 	}
 }
 

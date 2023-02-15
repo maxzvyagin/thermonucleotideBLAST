@@ -296,7 +296,8 @@ int worker(int argc, char *argv[])
 								opt.probe_clamp_5, opt.probe_clamp_3, 
 								opt.max_gap, opt.max_mismatch,
 								opt.max_len,
-								opt.single_primer_pcr);
+								opt.single_primer_pcr,
+								opt.use_thermo_filter);
 
 							mask_binding_sites(local_results, opt.mask_options,
 								opt.min_primer_tm, opt.min_probe_tm, melt,

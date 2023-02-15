@@ -410,7 +410,8 @@ std::list<hybrid_sig> amplicon(DNAHash &m_hash, const std::pair<std::string, SEQ
 	const unsigned int &m_max_gap,
 	const unsigned int &m_max_mismatch,
 	const unsigned int &m_max_amplicon_len,
-	const bool &m_single_primer_pcr);
+	const bool &m_single_primer_pcr, 
+	const bool &m_use_thermo_filter);
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // In padlock_search.cpp
