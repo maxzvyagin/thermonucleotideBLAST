@@ -446,7 +446,8 @@ std::list<hybrid_sig> hybrid(DNAHash &m_hash, const std::pair<std::string, SEQPT
 	const unsigned int &m_probe_clamp_3,
 	const unsigned int &m_max_gap,
 	const unsigned int &m_max_mismatch,
-	const int &m_target_strand);
+	const int &m_target_strand, 
+	const bool &m_use_thermo_filter);
 	
 
 //////////////////////////////////////////////////////////////////////////////////////////////

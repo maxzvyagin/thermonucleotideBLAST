@@ -70,7 +70,8 @@ list<hybrid_sig> hybrid(DNAHash &m_hash, const pair<string, SEQPTR> &m_seq,
 	const unsigned int &m_probe_clamp_3,
 	const unsigned int &m_max_gap,
 	const unsigned int &m_max_mismatch,
-	const int &m_target_strand)
+	const int &m_target_strand, 
+	const bool &m_use_thermo_filter)
 {
 	const float probe_strand = m_probe_strand/m_sig.probe_degen;
 
@@ -96,7 +97,8 @@ list<hybrid_sig> hybrid(DNAHash &m_hash, const pair<string, SEQPTR> &m_seq,
 			m_min_probe_tm, m_max_probe_tm,
 			m_min_probe_dg, m_max_probe_dg,
 			m_probe_clamp_5, m_probe_clamp_3,
-			m_max_gap, m_max_mismatch);	
+			m_max_gap, m_max_mismatch,
+			m_use_thermo_filter);	
 	}
 	
 	for(iter = bind.begin();iter != bind.end();iter++){
@@ -163,7 +165,8 @@ list<hybrid_sig> hybrid(DNAHash &m_hash, const pair<string, SEQPTR> &m_seq,
 			m_min_probe_tm, m_max_probe_tm,
 			m_min_probe_dg, m_max_probe_dg,
 			m_probe_clamp_5, m_probe_clamp_3,
-			m_max_gap, m_max_mismatch);
+			m_max_gap, m_max_mismatch, 
+			m_use_thermo_filter);
 	}
 
 	for(iter = bind.begin();iter != bind.end();iter++){
